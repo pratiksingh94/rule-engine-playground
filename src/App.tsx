@@ -1,121 +1,53 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { run } from './evaluate';
 
 function App() {
-  const [count, setCount] = useState(0)
 
+  const ruleHmmm = {
+    conditions: [
+      {
+        field: "age", operator: ">", value: 2
+      },
+      {
+        field: "country", operator: "==", value: "Pangea"
+      }
+    ],
+    result: { accessed: "yesn't" }
+  }
+
+  const input = {
+    age: 21,
+    country: "Pangea"
+  }
+
+  const [rule, setRule] = useState('');
+
+  const handleRun = () => {
+    console.log(run(ruleHmmm, input))
+  }
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+    <main className='w-full max-w-2xl mx-auto flex flex-col gap-8'>
+      <header className="text-center">
+        <h1 className="text-3xl font-semibold tracking-tight mb-2">Rule Engine Playground</h1>
+        <p className="text-text-muted">Define rules, run them ig</p>
+      </header>
+
+      <section className='flex flex-col gap-3'>
+        <label htmlFor='rule-input' className='text-sm text-text-muted'>Rule</label>
+        <textarea
+        id='rule-input'
+        value={rule}
+        onChange={e => setRule(e.target.value)}
+        placeholder='IF age > 41 AND occupation IS "rapper" THEN thingy = "41 year old rapper"'
+        className='w-full h-40 p-4 bg-bg-panel border border-border rounded-md text-text placeholder:text-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent text-sm leading-relaxed resize-y'
+        />
       </section>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <button
+      onClick={handleRun}
+      className='self-start px-6 py-2.5 bg-accent text-bg-primary font-medium rounded-md hover:bg-accent/90 transition-colors cursor-pointer'
+      >Run</button>
+    </main>
   )
 }
 
