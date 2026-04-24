@@ -121,6 +121,8 @@ export function lexer(input: string): Token[] {
         tokens.push(createToken("BOOLEAN", { value: upper === "TRUE" }))
       } else if(upper === "NULL") {
         tokens.push(createToken("NULL"))
+      } else {
+        tokens.push(createToken("IDENT", { value }))
       }
 
       continue;
