@@ -1,34 +1,35 @@
 import { useState } from 'react'
-import { run } from './evaluate';
+// import { run } from './evaluate';
+import { lexer } from './lexer';
 
 function App() {
 
-  const ruleHmmm = {
-    conditions: [
-      {
-        field: "age", operator: ">", value: 2
-      },
-      {
-        field: "country", operator: "==", value: "Pangea"
-      }
-    ],
-    result: { accessed: "yesn't" }
-  }
+  // const ruleHmmm = {
+  //   conditions: [
+  //     {
+  //       field: "age", operator: ">", value: 2
+  //     },
+  //     {
+  //       field: "country", operator: "==", value: "Pangea"
+  //     }
+  //   ],
+  //   result: { accessed: "yesn't" }
+  // }
 
-  const input = {
-    age: 21,
-    country: "Pangea"
-  }
+  // const input = {
+  //   age: 21,
+  //   country: "Pangea"
+  // }
 
   const [rule, setRule] = useState('');
 
   const handleRun = () => {
-    console.log(run(ruleHmmm, input))
+    console.log(lexer(rule))
   }
   return (
     <main className='w-full max-w-2xl mx-auto flex flex-col gap-8'>
       <header className="text-center">
-        <h1 className="text-3xl font-semibold tracking-tight mb-2">Rule Engine Playground</h1>
+        <h1 className="text-3xl font-semibold tracking-tight mb-2">Mini Rule Engine Playground</h1>
         <p className="text-text-muted">Define rules, run them ig</p>
       </header>
 
