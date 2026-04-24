@@ -1,6 +1,7 @@
 import { useState } from 'react'
 // import { run } from './evaluate';
-import { lexer } from './lexer';
+import { lexer } from './engine/lexer';
+import Parser from './engine/ast';
 
 function App() {
 
@@ -24,7 +25,11 @@ function App() {
   const [rule, setRule] = useState('');
 
   const handleRun = () => {
-    console.log(lexer(rule))
+    const tkns = lexer(rule);
+    const parser = new Parser(tkns);
+
+    const ast = parser.parseExpression();
+    console.log(ast)
   }
   return (
     <main className='w-full max-w-2xl mx-auto flex flex-col gap-8'>

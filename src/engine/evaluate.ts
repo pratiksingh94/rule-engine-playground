@@ -1,6 +1,6 @@
 // this is a random file i made to experiment and learn with hardcoded thinghs here!!
 
-
+// todo: replace this bullshit with AST input evulator function
 
 function evaluate(rule, input) {
   return rule.conditions.every(cond => {
