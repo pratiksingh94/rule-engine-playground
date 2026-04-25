@@ -59,3 +59,12 @@ export type AssignmentNode = {
 
 
 export type ASTNode = LiteralNode | IdentifierNode | BinaryNode | LogicalNode;
+
+
+
+
+
+export type Rule = {
+  id: string;
+  text: string;
+}
