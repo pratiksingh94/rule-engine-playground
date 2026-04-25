@@ -1,4 +1,4 @@
-import type { ASTNode, Token } from "../types";
+import type { AssignmentNode, ASTNode, RuleNode, Token } from "../types";
 
 class Parser {
   private tokens: Token[];
@@ -14,6 +14,16 @@ class Parser {
 
   private consume() {
     return this.tokens[this.i++]
+  }
+
+  private consumeType<T extends Token["type"]>(type: T): Extract<Token, { type: T}> {
+    const token = this.consume();
+
+    if(token.type !== type) {
+      throw new Error(`Expected ${type}, got ${token.type}`);
+    }
+
+    return token as Extract<Token, { type: T }>
   }
 
   parsePrimary(): ASTNode {
@@ -84,7 +94,7 @@ class Parser {
     return left;
   }
 
-  
+
   parseExpression(): ASTNode {
     let left = this.parseAnd();
 
@@ -101,6 +111,33 @@ class Parser {
     }
 
     return left;
+  }
+
+  parseRule(): RuleNode {
+    this.consumeType("IF");
+    const condition = this.parseExpression();
+    
+    this.consumeType("THEN");
+    const action = this.parseAssignment();
+
+    return {
+      type: "RULE",
+      condition,
+      action
+    }
+  }
+
+  parseAssignment(): AssignmentNode {
+    const ident = this.consumeType("IDENT");
+
+    this.consumeType("EQUALS");
+    const  value = this.parseExpression();
+
+    return {
+      type: "ASSIGNMENT",
+      target: ident.value,
+      value
+    }
   }
 }
 

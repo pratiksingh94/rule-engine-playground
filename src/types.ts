@@ -8,7 +8,10 @@ export type TokenMap = {
   NUMBER: { value: number };
   STRING: { value: string };
   BOOLEAN: { value: boolean };
-  NULL: {}
+  NULL: {};
+  IF: {};
+  THEN: {};
+  EQUALS: {};
 }
 
 export type Token = {
@@ -42,6 +45,17 @@ export type LogicalNode = {
   right: ASTNode;
 }
 
+export type RuleNode = {
+  type: "RULE";
+  condition: ASTNode;
+  action: AssignmentNode;
+}
+
+export type AssignmentNode = {
+  type: "ASSIGNMENT",
+  target: string;
+  value: ASTNode;
+}
 
 
 export type ASTNode = LiteralNode | IdentifierNode | BinaryNode | LogicalNode;

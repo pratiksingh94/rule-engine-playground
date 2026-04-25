@@ -1,25 +1,66 @@
-// this is a random file i made to experiment and learn with hardcoded thinghs here!!
+import type { ASTNode, BinaryNode, LogicalNode, RuleNode } from "../types";
 
-// todo: replace this bullshit with AST input evulator function
-
-function evaluate(rule, input) {
-  return rule.conditions.every(cond => {
-    const actual = input[cond.field];
-
-    if(cond.operator === ">") return actual  > cond.value;
+function evaluate(node: ASTNode, data: any): any {
+  switch(node.type) {
+    case "NUMBER":
+    case "STRING":
+    case "BOOLEAN":
+      return node.value;
     
-    if(cond.operator === "<") return actual < cond.value;
+    case "NULL":
+      return null;
+    
+    case "IDENT":
+      return data[node.name];
+    
+    case "BINARY": {
+      const left = evaluate(node.left, data);
+      const right = evaluate(node.right, data);
 
-    if(cond.operator === "==") return actual === cond.value
+      switch(node.operator) {
+        case "==":
+          return left === right;
+        case "!=":
+          return left !== right;
+        case "<":
+          return left < right;
+        case ">":
+          return left > right;
+        case "<=":
+          return left <= right;
+        case ">=":
+          return left >= right;
 
-    return false;
-  })
+        default:
+          throw new Error(`Unknown operator ${(node as BinaryNode).operator}`)
+      }
+    }
+    
+    case "LOGICAL": {
+      const left = evaluate(node.left, data);
+
+      if(node.operator === "AND") {
+        return left && evaluate(node.right, data)
+      }
+      if(node.operator === "OR") {
+        return left || evaluate(node.right, data);
+      }
+
+      throw new Error(`Unknown logical operator: ${(node as LogicalNode).operator}`)
+    }
+
+    default:
+      throw new Error(`Cannot evaluate node type ${(node as any).type}`)
+  }
 }
 
-export function run(rule,input) {
-  if(evaluate(rule, input)) {
-    return rule.result;
-  }
 
-  return null;
+
+export function runRule(rule: RuleNode, data: any) {
+    if(evaluate(rule.condition, data)) {
+      const value = evaluate(rule.action.value, data)
+      data[rule.action.target] = value;
+    }
+
+    return data;
 }

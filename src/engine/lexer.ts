@@ -1,4 +1,4 @@
-import type { Token, TokenMap } from "./types";
+import type { Token, TokenMap } from "../types";
 
 
 // god knows what i wrote here, it just works finally i dont wanna touch it T___T
@@ -59,6 +59,11 @@ export function lexer(input: string): Token[] {
       tokens.push(createToken("OP", { value: char }))
       i++
       continue
+    }
+    if(char === "=") {
+      tokens.push(createToken("EQUALS"));
+      i++;
+      continue;
     }
 
     // strings
@@ -121,6 +126,10 @@ export function lexer(input: string): Token[] {
         tokens.push(createToken("BOOLEAN", { value: upper === "TRUE" }))
       } else if(upper === "NULL") {
         tokens.push(createToken("NULL"))
+      } else if(upper === "IF") {
+        tokens.push(createToken("IF"));
+      } else if(upper === "THEN") {
+        tokens.push(createToken("THEN"));
       } else {
         tokens.push(createToken("IDENT", { value }))
       }

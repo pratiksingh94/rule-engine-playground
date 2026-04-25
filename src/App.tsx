@@ -2,6 +2,7 @@ import { useState } from 'react'
 // import { run } from './evaluate';
 import { lexer } from './engine/lexer';
 import Parser from './engine/ast';
+import { runRule } from './engine/evaluate';
 
 function App() {
 
@@ -17,10 +18,10 @@ function App() {
   //   result: { accessed: "yesn't" }
   // }
 
-  // const input = {
-  //   age: 21,
-  //   country: "Pangea"
-  // }
+  const input = {
+    age: 12,
+    country: "IN"
+  }
 
   const [rule, setRule] = useState('');
 
@@ -28,8 +29,11 @@ function App() {
     const tkns = lexer(rule);
     const parser = new Parser(tkns);
 
-    const ast = parser.parseExpression();
-    console.log(ast)
+    const ast = parser.parseRule();
+    // console.log(ast)
+
+    const result = runRule(ast, input)
+    console.log(result);
   }
   return (
     <main className='w-full max-w-2xl mx-auto flex flex-col gap-8'>
