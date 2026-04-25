@@ -1,15 +1,16 @@
+import { useState } from 'react';
 import { RuleInput } from './components/RuleInput';
 import Parser from './engine/ast';
 import { runRule } from './engine/evaluate';
 import { lexer } from './engine/lexer';
+import { type Variable, VariablesPanel } from './components/VariablesPanel';
+import parseVariables from './utils/parseVariables';
 
 function App() {
-  const input = {
-    age: 12,
-    country: "IN"
-  }
+  const [variables, setVariables] = useState<Variable[]>([]);
 
   const handleRun = (rule: string) => {
+    const input = parseVariables(variables);
     const tokens = lexer(rule);
     const parser = new Parser(tokens);
     const ast = parser.parseRule();
@@ -26,6 +27,7 @@ function App() {
       </header>
 
       <RuleInput onRun={handleRun}/>
+      <VariablesPanel variables={variables} onChange={setVariables}/>
     </main>
   )
 }
