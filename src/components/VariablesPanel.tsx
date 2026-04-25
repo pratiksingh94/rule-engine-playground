@@ -27,7 +27,7 @@ export function VariablesPanel({ variables, onChange }: Props) {
 
   return (
     <section className="flex flex-col gap-3">
-      <label className="text-sm text-text-muted">Variables</label>
+      <label className="text-sm text-text-muted">Variables (input)</label>
 
       {variables.map((v, i) => (
         <div key={i} className="flex gap-2">

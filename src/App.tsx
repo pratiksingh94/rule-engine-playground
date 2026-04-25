@@ -6,23 +6,33 @@ import { lexer } from './engine/lexer';
 import { type Variable, VariablesPanel } from './components/VariablesPanel';
 import parseVariables from './utils/parseVariables';
 import { ResultDisplay } from './components/ResultDisplay';
+import { ErrorDisplay } from './components/ErrorDisplay';
 
 function App() {
   const [variables, setVariables] = useState<Variable[]>([]);
 
   const [result, setResult] = useState<{ matched: boolean; output: Record<string, unknown> } | null>(null)
 
-  const handleRun = (rule: string) => {
-    if(!rule.trim()) {
-      throw new Error("Rule cannot be empty");
-    }
-    const input = parseVariables(variables);
-    const tokens = lexer(rule);
-    const parser = new Parser(tokens);
-    const ast = parser.parseRule();
+  const [error, setError] = useState<string | null>(null);
 
-    const result = runRule(ast, { ...input });
-    setResult(result);
+  const handleRun = (rule: string) => {
+    setError(null);
+    try {
+      if(!rule.trim()) {
+        throw new Error("Rule cannot be empty");
+      }
+
+      const input = parseVariables(variables);
+      const tokens = lexer(rule);
+      const parser = new Parser(tokens);
+      const ast = parser.parseRule();
+      const res = runRule(ast, input);
+
+      setResult(res);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+      setResult(null);
+    }
   }
 
   return (
@@ -35,6 +45,7 @@ function App() {
       <RuleInput onRun={handleRun}/>
       <VariablesPanel variables={variables} onChange={setVariables}/>
 
+      {error && <ErrorDisplay error={error}/>}
       {result && <ResultDisplay matched={result.matched} output={result.output}/>}
     </main>
   )
