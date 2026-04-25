@@ -13,14 +13,24 @@ class Parser {
   }
 
   private consume() {
-    return this.tokens[this.i++]
+    const token = this.tokens[this.i];
+    if(!token) {
+      throw new Error(`Unexpected end of rule`);
+    }
+
+    this.i++
+    return token;
   }
 
   private consumeType<T extends Token["type"]>(type: T): Extract<Token, { type: T}> {
-    const token = this.consume();
+    const token = this.tokens[this.i];
+    if(!token) {
+      throw new Error(`Expected '${type}' but reached end of rule`);
+    }
+    this.i++;
 
     if(token.type !== type) {
-      throw new Error(`Expected ${type}, got ${token.type}`);
+      throw new Error(`Expected '${type}', got '${token.type}'`)
     }
 
     return token as Extract<Token, { type: T }>
@@ -43,11 +53,19 @@ class Parser {
     }
     if(token.type === "LPAREN") {
       const expr = this.parseExpression();
-      this.consumeType("RPAREN")
+      if(!this.peek()) {
+        throw new Error(`Missing closing paranthesis for expression starting at position ${this.i - 1}`);
+      }
+
+      const next = this.consume();
+      if(next.type !== "RPAREN") {
+        throw new Error(`Expected closing paranthesis ')', got '${next.type}'`);
+      }
+
       return expr;
     }
 
-    throw new Error("Unexpeted token in primary")
+    throw new Error(`Unexpected token '${token.type}' in expression`);
   }
 
   
@@ -114,11 +132,24 @@ class Parser {
   }
 
   parseRule(): RuleNode {
+    if(this.peek()?.type !== "IF") {
+      throw new Error("Rule must start with 'IF' keyword");
+    }
     this.consumeType("IF");
     const condition = this.parseExpression();
-    
+
+    if(this.peek()?.type !== "THEN") {
+      if(!this.peek()) {
+        throw new Error(`Expected 'THEN' after condition but reached end of rule`);
+      }
+      throw new Error(`Expected 'THEN' after condition, got '${this.peek()?.type}'`)
+    }
     this.consumeType("THEN");
     const action = this.parseAssignment();
+
+    if(this.peek()) {
+      throw new Error(`Unexpected token '${this.peek()?.type}' after rule definition`);
+    }
 
     return {
       type: "RULE",

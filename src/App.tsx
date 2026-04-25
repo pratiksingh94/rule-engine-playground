@@ -13,6 +13,9 @@ function App() {
   const [result, setResult] = useState<{ matched: boolean; output: Record<string, unknown> } | null>(null)
 
   const handleRun = (rule: string) => {
+    if(!rule.trim()) {
+      throw new Error("Rule cannot be empty");
+    }
     const input = parseVariables(variables);
     const tokens = lexer(rule);
     const parser = new Parser(tokens);

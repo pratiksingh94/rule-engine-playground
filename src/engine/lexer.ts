@@ -85,7 +85,7 @@ export function lexer(input: string): Token[] {
       }
 
       if(input[i] !== quote) {
-        throw new Error("Unterminated string");
+        throw new Error(`Unterminated string: missing closing quote (")`)
       }
 
       i++;
@@ -137,7 +137,7 @@ export function lexer(input: string): Token[] {
       continue;
     }
 
-    throw new Error(`Unexpected character: '${char}' at position ${i}`)
+    throw new Error(`Unexpected character '${char}' at position ${i}`);
   }
 
   return tokens

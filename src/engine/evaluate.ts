@@ -11,11 +11,21 @@ function evaluate(node: ASTNode, data: any): any {
       return null;
     
     case "IDENT":
-      return data[node.name];
+      const value = data[node.name];
+      if(value === undefined) {
+        throw new Error(`Variable '${node.name}' not found in input`);
+      }
+      return value;
     
     case "BINARY": {
       const left = evaluate(node.left, data);
       const right = evaluate(node.right, data);
+
+      const leftType = typeof left;
+      const rightType = typeof right;
+      if(leftType !== rightType && left !== null && right !== null) {
+        throw new Error(`Type mismatch: cannot compare ${leftType} with ${rightType} using '${node.operator}'`)
+      }
 
       switch(node.operator) {
         case "==":
