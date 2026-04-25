@@ -5,9 +5,12 @@ import { runRule } from './engine/evaluate';
 import { lexer } from './engine/lexer';
 import { type Variable, VariablesPanel } from './components/VariablesPanel';
 import parseVariables from './utils/parseVariables';
+import { ResultDisplay } from './components/ResultDisplay';
 
 function App() {
   const [variables, setVariables] = useState<Variable[]>([]);
+
+  const [result, setResult] = useState<{ matched: boolean; output: Record<string, unknown> } | null>(null)
 
   const handleRun = (rule: string) => {
     const input = parseVariables(variables);
@@ -16,7 +19,7 @@ function App() {
     const ast = parser.parseRule();
 
     const result = runRule(ast, { ...input });
-    console.log(result)
+    setResult(result);
   }
 
   return (
@@ -28,6 +31,8 @@ function App() {
 
       <RuleInput onRun={handleRun}/>
       <VariablesPanel variables={variables} onChange={setVariables}/>
+
+      {result && <ResultDisplay matched={result.matched} output={result.output}/>}
     </main>
   )
 }

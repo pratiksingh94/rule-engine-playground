@@ -56,12 +56,14 @@ function evaluate(node: ASTNode, data: any): any {
 
 
 
-export function runRule(rule: RuleNode, data: any) {
-  const result = { ...data }
-    if(evaluate(rule.condition, result)) {
-      const value = evaluate(rule.action.value, result)
-      result[rule.action.target] = value;
-    }
+export function runRule(rule: RuleNode, data: any): { matched: boolean; output: Record<string, unknown> } {
+  const result = {}
+  const matched = evaluate(rule.condition, data);
 
-    return result;
+  if(matched) {
+    const value = evaluate(rule.action.value, data);
+    result[rule.action.target] = value;
+  }
+
+  return { matched, output: result }
 }
