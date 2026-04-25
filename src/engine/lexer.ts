@@ -32,6 +32,12 @@ export function lexer(input: string): Token[] {
       continue
     }
 
+    if(char === ",") {
+      tokens.push(createToken("COMMA"));
+      i++;
+      continue;
+    }
+
 
 
     // operators

@@ -12,6 +12,7 @@ export type TokenMap = {
   IF: {};
   THEN: {};
   EQUALS: {};
+  COMMA: {};
 }
 
 export type Token = {
@@ -48,7 +49,7 @@ export type LogicalNode = {
 export type RuleNode = {
   type: "RULE";
   condition: ASTNode;
-  action: AssignmentNode;
+  actions: AssignmentNode[];
 }
 
 export type AssignmentNode = {

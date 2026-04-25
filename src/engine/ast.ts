@@ -145,16 +145,44 @@ class Parser {
       throw new Error(`Expected 'THEN' after condition, got '${this.peek()?.type}'`)
     }
     this.consumeType("THEN");
-    const action = this.parseAssignment();
+    const actions: AssignmentNode[] = [];
+
+    while(this.peek()) {
+      if(this.peek()?.type !== "IDENT") {
+        if(this.peek()?.type === "COMMA") {
+          this.consume();
+          continue;
+        }
+        throw new Error(`Expected variable name, got '${this.peek()?.type}'`)
+      }
+
+      actions.push(this.parseAssignment());
+
+      if(!this.peek() || this.peek()?.type === "COMMA") {
+        if(this.peek()?.type === "COMMA") {
+          this.consume();
+          continue;
+        }
+
+        break;
+      }
+      if(this.peek()?.type !== "COMMA") {
+        break;
+      }
+    }
+
+    if(this.peek()?.type === "COMMA") {
+      throw new Error(`Unexpected comma after last assignment`)
+    }
 
     if(this.peek()) {
-      throw new Error(`Unexpected token '${this.peek()?.type}' after rule definition`);
+      throw new Error(`Unexpected token '${this.peek().type}' after rule definition`);
     }
 
     return {
       type: "RULE",
       condition,
-      action
+      actions
     }
   }
 

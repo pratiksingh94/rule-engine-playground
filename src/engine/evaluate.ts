@@ -71,8 +71,10 @@ export function runRule(rule: RuleNode, data: any): { matched: boolean; output: 
   const matched = evaluate(rule.condition, data);
 
   if(matched) {
-    const value = evaluate(rule.action.value, data);
-    result[rule.action.target] = value;
+    for (const action of rule.actions) {
+      const value = evaluate(action.value, result);
+      result[action.target] = value;
+    }
   }
 
   return { matched, output: result }
