@@ -43,7 +43,7 @@ class Parser {
     }
     if(token.type === "LPAREN") {
       const expr = this.parseExpression();
-      this.consume();
+      this.consumeType("RPAREN")
       return expr;
     }
 

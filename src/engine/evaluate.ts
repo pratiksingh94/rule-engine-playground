@@ -57,10 +57,11 @@ function evaluate(node: ASTNode, data: any): any {
 
 
 export function runRule(rule: RuleNode, data: any) {
-    if(evaluate(rule.condition, data)) {
-      const value = evaluate(rule.action.value, data)
-      data[rule.action.target] = value;
+  const result = { ...data }
+    if(evaluate(rule.condition, result)) {
+      const value = evaluate(rule.action.value, result)
+      result[rule.action.target] = value;
     }
 
-    return data;
+    return result;
 }

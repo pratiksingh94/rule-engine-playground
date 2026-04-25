@@ -14,7 +14,7 @@ function App() {
     const parser = new Parser(tokens);
     const ast = parser.parseRule();
 
-    const result = runRule(ast, input);
+    const result = runRule(ast, { ...input });
     console.log(result)
   }
 
