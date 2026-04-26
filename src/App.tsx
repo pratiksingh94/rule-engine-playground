@@ -7,6 +7,7 @@ import type { Rule, Template } from './types';
 import parseRule from './utils/parseRule';
 import { RulesPanel } from './components/RulePanel';
 import { TemplateModal } from './components/TemplatesModal';
+import { GuideModal } from './components/GuidModal';
 
 function App() {
   const [rules, setRules] = useState<Rule[]>([{ id: '1', text: "" }]);
@@ -17,6 +18,8 @@ function App() {
   const [error, setError] = useState<string | null>(null);
 
   const [showTemplates, setShowTemplates] = useState(false);
+
+  const [showGuide, setShowGuide] = useState(false);
 
   const handleRunAll = () => {
     setError(null);
@@ -84,15 +87,19 @@ function App() {
         e.preventDefault();
         handleRunAll();
       }
-      if(e.key === "Escape" && showTemplates) {
+      if(e.key === "Escape" && (showTemplates || showGuide)) {
         setShowTemplates(false);
+        setShowGuide(false);
+      }
+      if(e.key === "?") {
+        setShowGuide(true);
       }
     }
 
     document.addEventListener('keydown', handleKeyDown);
 
     return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [showTemplates])
+  }, [showTemplates, showGuide])
 
   return (
     <main className='w-full max-w-2xl mx-auto flex flex-col gap-8'>
@@ -104,13 +111,22 @@ function App() {
       <RulesPanel rules={rules} onChange={setRules} onRunSingle={handleRunSingle} onOpenTemplates={() => setShowTemplates(true)}/>
       <VariablesPanel variables={variables} onChange={setVariables}/>
 
-      <div className="flex gap-3">
-        <button onClick={handleRunAll} className='px-6 py-2.5 bg-accent text-bg-primary font-medium rounded-md hover:bg-accent/90 transition-colors cursor-pointer'>
+      <div className="flex gap-3 items-center">
+        <div className='flex gap-3'>
+          <button onClick={handleRunAll} className='px-6 py-2.5 bg-accent text-bg-primary font-medium rounded-md hover:bg-accent/90 transition-colors cursor-pointer'>
           Run All Rules
         </button>
 
-        <button onClick={handleClearAll} className='px-6 py-2.5 border border-border text-text-muted font-medium rounded-md hover:border-text-muted hover:text-text transition-colors cursor-pointer'>
+          <button onClick={handleClearAll} className='px-6 py-2.5 border border-border text-text-muted font-medium rounded-md hover:border-text-muted hover:text-text transition-colors cursor-pointer'>
           Clear All
+        </button>
+        </div>
+
+        <button
+        onClick={() => setShowGuide(true)}
+        className='ml-auto px-4 py-2 text-sm text-text-muted hover:text-text transition-colors cursor-pointer'
+        >
+          Guide (?)
         </button>
       </div>
       <p className='text-xs text-text-muted'>CTRL + Enter to run all | Esc to close modal</p>
@@ -121,6 +137,7 @@ function App() {
       ))}
 
       <TemplateModal isOpen={showTemplates} onClose={() => setShowTemplates(false)} onSelect={handleAddFromTemplate}/>
+        <GuideModal isOpen={showGuide} onClose={() => setShowGuide(false)}/>
     </main>
   )
 }
