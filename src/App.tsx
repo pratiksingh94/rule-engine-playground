@@ -60,6 +60,14 @@ function App() {
     }
   }
 
+
+  const handleClearAll = () => {
+    setRules([])
+    setVariables([]);
+    setResults([]);
+    setError(null);
+  }
+
   return (
     <main className='w-full max-w-2xl mx-auto flex flex-col gap-8'>
       <header className="text-center">
@@ -70,12 +78,15 @@ function App() {
       <RulesPanel rules={rules} onChange={setRules} onRunSingle={handleRunSingle}/>
       <VariablesPanel variables={variables} onChange={setVariables}/>
 
-      <button
-      onClick={handleRunAll}
-      className="self-start px-6 py-2.5 bg-accent text-bg-primary font-medium rounded-md hover:bg-accent/90 transition-colors cursor-pointer"
-      >
-        Run All Rules
-      </button>
+      <div className="flex gap-3">
+        <button onClick={handleRunAll} className='px-6 py-2.5 bg-accent text-bg-primary font-medium rounded-md hover:bg-accent/90 transition-colors cursor-pointer'>
+          Run All Rules
+        </button>
+
+        <button onClick={handleClearAll} className='px-6 py-2.5 border border-border text-text-muted font-medium rounded-md hover:border-text-muted hover:text-text transition-colors cursor-pointer'>
+          Clear All
+        </button>
+      </div>
 
       {error && <ErrorDisplay error={error}/>}
       {results.map((result, i) => (
