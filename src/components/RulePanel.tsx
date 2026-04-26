@@ -5,10 +5,11 @@ interface Props {
   rules: Rule[];
   onChange: (rule: Rule[]) => void;
   onRunSingle: (ruleID: string) => void;
+  onOpenTemplates: () => void;
 }
 
 
-export function RulesPanel({ rules, onChange, onRunSingle }: Props) {
+export function RulesPanel({ rules, onChange, onRunSingle, onOpenTemplates }: Props) {
   const addRule = () => {
     onChange([...rules, { id: generateID(), text: "" }])
   }
@@ -56,6 +57,12 @@ export function RulesPanel({ rules, onChange, onRunSingle }: Props) {
       onClick={addRule}
       className="self-start px-4 py-2 text-sm text-text-muted hover:text-text transition-colors cursor-pointer"
       >+ Add rule</button>
+      <button
+      onClick={onOpenTemplates}
+      className="self-start px-4 py-2 text-sm text-text-muted hover:text-text transition-colors cursor-pointer"
+      >
+        + Add from Template
+      </button>
     </section>
   )
 }

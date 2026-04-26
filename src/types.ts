@@ -78,3 +78,18 @@ export type Rule = {
   id: string;
   text: string;
 }
+
+
+interface TemplateVariable {
+  name: string;
+  type: "string" | "number" | "boolean";
+  value: string;
+}
+
+
+export interface Template {
+  name: string;
+  rule: string;
+  description: string;
+  variables: TemplateVariable[];
+}

@@ -3,9 +3,10 @@ import { type Variable, VariablesPanel } from './components/VariablesPanel';
 import parseVariables from './utils/parseVariables';
 import { ResultDisplay } from './components/ResultDisplay';
 import { ErrorDisplay } from './components/ErrorDisplay';
-import type { Rule } from './types';
+import type { Rule, Template } from './types';
 import parseRule from './utils/parseRule';
 import { RulesPanel } from './components/RulePanel';
+import { TemplateModal } from './components/TemplatesModal';
 
 function App() {
   const [rules, setRules] = useState<Rule[]>([{ id: '1', text: "" }]);
@@ -14,6 +15,8 @@ function App() {
   const [results, setResults] = useState<Array<{ruleIndex: number, matched: boolean; output: Record<string, unknown> }>>([])
 
   const [error, setError] = useState<string | null>(null);
+
+  const [showTemplates, setShowTemplates] = useState(false);
 
   const handleRunAll = () => {
     setError(null);
@@ -68,6 +71,13 @@ function App() {
     setError(null);
   }
 
+  const handleAddFromTemplate = (template: Template) => {
+    setError(null);
+    setResults([]);
+    setRules([{ id: Date.now().toString(), text: template.rule }])
+    setVariables([...template.variables])
+  }
+
   return (
     <main className='w-full max-w-2xl mx-auto flex flex-col gap-8'>
       <header className="text-center">
@@ -75,7 +85,7 @@ function App() {
         <p className="text-text-muted">Define rules, run them ig</p>
       </header>
 
-      <RulesPanel rules={rules} onChange={setRules} onRunSingle={handleRunSingle}/>
+      <RulesPanel rules={rules} onChange={setRules} onRunSingle={handleRunSingle} onOpenTemplates={() => setShowTemplates(true)}/>
       <VariablesPanel variables={variables} onChange={setVariables}/>
 
       <div className="flex gap-3">
@@ -92,6 +102,8 @@ function App() {
       {results.map((result, i) => (
         <ResultDisplay key={i} ruleIndex={result.ruleIndex} matched={result.matched} output={result.output}/>
       ))}
+
+      <TemplateModal isOpen={showTemplates} onClose={() => setShowTemplates(false)} onSelect={handleAddFromTemplate}/>
     </main>
   )
 }
