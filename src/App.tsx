@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { type Variable, VariablesPanel } from './components/VariablesPanel';
 import parseVariables from './utils/parseVariables';
 import { ResultDisplay } from './components/ResultDisplay';
@@ -78,6 +78,22 @@ function App() {
     setVariables([...template.variables])
   }
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if(e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        handleRunAll();
+      }
+      if(e.key === "Escape" && showTemplates) {
+        setShowTemplates(false);
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => document.removeEventListener("keydown", handleKeyDown)
+  }, [showTemplates])
+
   return (
     <main className='w-full max-w-2xl mx-auto flex flex-col gap-8'>
       <header className="text-center">
@@ -97,6 +113,7 @@ function App() {
           Clear All
         </button>
       </div>
+      <p className='text-xs text-text-muted'>CTRL + Enter to run all | Esc to close modal</p>
 
       {error && <ErrorDisplay error={error}/>}
       {results.map((result, i) => (

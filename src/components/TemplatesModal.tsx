@@ -101,7 +101,7 @@ export function TemplateModal({ isOpen, onClose, onSelect }: Props) {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Rule Templates</h2>
 
-          <button onClick={onClose} className="text-text-muted hover:text-text">x</button>
+          <button onClick={onClose} className="text-text-muted hover:text-text cursor-pointer">x</button>
         </div>
 
         <div className="grid gap-3">
