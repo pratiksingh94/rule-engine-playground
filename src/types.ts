@@ -4,7 +4,7 @@ export type TokenMap = {
   AND: {};
   OR: {};
   IDENT: { value: string };
-  OP: { value: ">" | "<" | "==" | "!=" | ">=" | "<=" };
+  OP: { value: ">" | "<" | "==" | "!=" | ">=" | "<=" | "CONTAINS" | "STARTSWITH" | "ENDSWITH" };
   NUMBER: { value: number };
   STRING: { value: string };
   BOOLEAN: { value: boolean };
@@ -13,6 +13,7 @@ export type TokenMap = {
   THEN: {};
   EQUALS: {};
   COMMA: {};
+  BETWEEN: {};
 }
 
 export type Token = {
@@ -34,7 +35,7 @@ export type IdentifierNode = {
 
 export type BinaryNode = {
   type: "BINARY";
-  operator: "==" | "!=" | ">" | "<" | ">=" | "<=";
+  operator: "==" | "!=" | ">" | "<" | ">=" | "<=" | "CONTAINS" | "STARTSWITH" | "ENDSWITH";
   left: ASTNode;
   right: ASTNode;
 }
@@ -45,6 +46,14 @@ export type LogicalNode = {
   left: ASTNode;
   right: ASTNode;
 }
+
+export type BetweenNode = {
+  type: "BETWEEN";
+  value: ASTNode;
+  min: ASTNode;
+  max: ASTNode;
+}
+
 
 export type RuleNode = {
   type: "RULE";
@@ -59,7 +68,7 @@ export type AssignmentNode = {
 }
 
 
-export type ASTNode = LiteralNode | IdentifierNode | BinaryNode | LogicalNode;
+export type ASTNode = LiteralNode | IdentifierNode | BinaryNode | LogicalNode | BetweenNode;
 
 
 

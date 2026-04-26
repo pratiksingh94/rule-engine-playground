@@ -136,6 +136,14 @@ export function lexer(input: string): Token[] {
         tokens.push(createToken("IF"));
       } else if(upper === "THEN") {
         tokens.push(createToken("THEN"));
+      } else if(upper === "BETWEEN") {
+        tokens.push(createToken("BETWEEN"))
+      } else if(upper === "CONTAINS") {
+        tokens.push(createToken("OP", { value: "CONTAINS" }))
+      } else if(upper === "STARTSWITH") {
+        tokens.push(createToken("OP", { value: "STARTSWITH" }))
+      } else if(upper === "ENDSWITH") {
+        tokens.push(createToken("OP", { value: "ENDSWITH" }));
       } else {
         tokens.push(createToken("IDENT", { value }))
       }

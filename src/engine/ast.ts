@@ -97,7 +97,23 @@ class Parser {
   parseAnd(): ASTNode {
     let left = this.parseBinary();
 
-    while(this.peek()?.type === "AND") {
+    while(this.peek()?.type === "AND" || this.peek()?.type === "BETWEEN") {
+      if(this.peek()?.type === "BETWEEN") {
+        this.consume();
+        const min = this.parseBinary();
+
+        this.consumeType("AND")
+        const max = this.parseBinary();
+
+        left = {
+          type: "BETWEEN",
+          value: left,
+          min,
+          max
+        }
+        continue;
+      }
+
       this.consume();
       const right = this.parseBinary();
 
@@ -109,7 +125,7 @@ class Parser {
       }
     }
 
-    return left;
+    return left
   }
 
 

@@ -40,6 +40,12 @@ function evaluate(node: ASTNode, data: any): any {
           return left <= right;
         case ">=":
           return left >= right;
+        case "CONTAINS":
+          return String(left).includes(String(right));
+        case "STARTSWITH":
+          return String(left).startsWith(String(right));
+        case "ENDSWITH":
+          return String(left).endsWith(String(right));
 
         default:
           throw new Error(`Unknown operator ${(node as BinaryNode).operator}`)
@@ -57,6 +63,14 @@ function evaluate(node: ASTNode, data: any): any {
       }
 
       throw new Error(`Unknown logical operator: ${(node as LogicalNode).operator}`)
+    }
+
+
+    case "BETWEEN": {
+      const value = evaluate(node.value, data);
+      const min = evaluate(node.min, data);
+      const max = evaluate(node.max, data);
+      return value >= min && value <= max;
     }
 
     default:
