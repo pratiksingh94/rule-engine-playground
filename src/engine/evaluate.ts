@@ -1,4 +1,4 @@
-import type { ASTNode, BinaryNode, LogicalNode, RuleNode } from "../types";
+import type { ASTNode, LogicalNode, RuleNode } from "../types";
 
 function evaluate(node: ASTNode, data: any): any {
   switch(node.type) {
@@ -27,7 +27,9 @@ function evaluate(node: ASTNode, data: any): any {
         throw new Error(`Type mismatch: cannot compare ${leftType} with ${rightType} using '${node.operator}'`)
       }
 
-      switch(node.operator) {
+      const op = node.operator as string;
+
+      switch(op) {
         case "==":
           return left === right;
         case "!=":
@@ -48,7 +50,7 @@ function evaluate(node: ASTNode, data: any): any {
           return String(left).endsWith(String(right));
 
         default:
-          throw new Error(`Unknown operator ${(node as BinaryNode).operator}`)
+          throw new Error(`Unknown operator ${op}`)
       }
     }
     
@@ -81,7 +83,7 @@ function evaluate(node: ASTNode, data: any): any {
 
 
 export function runRule(rule: RuleNode, data: any): { matched: boolean; output: Record<string, unknown> } {
-  const result = {}
+  const result: Record<string, string | number | boolean> = {}
   const matched = evaluate(rule.condition, data);
 
   if(matched) {
