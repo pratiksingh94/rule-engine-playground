@@ -41,6 +41,7 @@ IF age BETWEEN 18 AND 65 THEN canWork = true
 - Result display with match status
 - Keyboard shortcuts
 - Smol guide
+- Import/Export rules
 
 ## Keyboard shorcuts
 - `CTRL + Enter` Run all rules
