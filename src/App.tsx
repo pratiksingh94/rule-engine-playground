@@ -10,7 +10,7 @@ import { TemplateModal } from './components/TemplatesModal';
 import { GuideModal } from './components/GuidModal';
 
 function App() {
-  const [rules, setRules] = useState<Rule[]>([{ id: '1', text: "" }]);
+  const [rules, setRules] = useState<Rule[]>([]);
   const [variables, setVariables] = useState<Variable[]>([]);
 
   const [results, setResults] = useState<Array<{ruleIndex: number, matched: boolean; output: Record<string, unknown> }>>([])
