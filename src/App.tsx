@@ -101,6 +101,48 @@ function App() {
     return () => document.removeEventListener("keydown", handleKeyDown)
   }, [showTemplates, showGuide])
 
+
+  const handleExport = () => {
+    const data = {
+      rules,
+      variables
+    }
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a")
+    a.href = url;
+    a.download = "mini-rule-engine.json";
+    a.click()
+
+    URL.revokeObjectURL(url);
+  }
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const data = JSON.parse(event.target?.result as string);
+        if(!data.rules || !data.variables) {
+          setError("Invalid file format");
+          return;
+        }
+
+        setRules(data.rules);
+        setVariables(data.variables);
+      } catch {
+        setError("Failed to parse JSON file")
+      }
+    }
+
+    reader.readAsText(file);
+    e.target.value = '';
+  }
+
   return (
     <main className='w-full max-w-2xl mx-auto flex flex-col gap-8'>
       <header className="text-center">
@@ -120,13 +162,25 @@ function App() {
           <button onClick={handleClearAll} className='px-6 py-2.5 border border-border text-text-muted font-medium rounded-md hover:border-text-muted hover:text-text transition-colors cursor-pointer'>
           Clear All
         </button>
+
+        <button
+        onClick={handleExport}
+        className='px-6 py-2.5 border border-border text-text-muted font-medium rounded-md hover:border-text-muted hover:text-text transition-colors cursor-pointer'
+        >
+          Export
+        </button>
+
+        <label className='px-6 py-2.5 border border-border text-text-muted font-medium rounded-md hover:border-text-muted hover:text-text transition-colors cursor-pointer'>
+          Import
+          <input type='file' accept='.json' onChange={handleImport} className='hidden'/>
+        </label>
         </div>
 
         <button
         onClick={() => setShowGuide(true)}
         className='ml-auto px-4 py-2 text-sm text-text-muted hover:text-text transition-colors cursor-pointer'
         >
-          Guide (?)
+          Guide ?
         </button>
       </div>
       <p className='text-xs text-text-muted'>CTRL + Enter to run all | Esc to close modal</p>
